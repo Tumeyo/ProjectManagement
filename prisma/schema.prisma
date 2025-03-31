@@ -1,0 +1,264 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Baiguullaga {
+  Baiguullaga_ID      String  @id @map("Baiguullaga_ID") @db.VarChar(5)
+  Baiguullaga_ner     String? @db.VarChar(45)
+  Uil_ajillagaanii_chiglel String? @db.VarChar(255)
+  Utas               Int?
+  Hayg               String? @db.VarChar(255)
+  Ajilchdiin_too     Int?
+
+  Hereglegch         Hereglegch[]
+  Zahialga           Zahialga[]
+}
+
+model Admin {
+  Admin_ID       String @id @map("Admin_ID") @db.VarChar(5)
+  Admin_ner      String? @db.VarChar(45)
+  login_name     String? @db.VarChar(25)
+  login_password String? @db.VarChar(65)
+}
+
+model Hereglegch_angilal {
+  Hereglegch_angilal_ID String @id @map("Hereglegch_angilal_ID") @db.VarChar(5)
+  Hereglegch_angilal_ner String? @db.VarChar(45)
+
+  Hereglegch Hereglegch[]
+}
+
+model Hereglegch {
+  Hereglegch_ID              String  @id @map("Hereglegch_ID") @db.VarChar(5)
+  Hereglegch_ner             String? @db.VarChar(45)
+  Hereglegch_email           String? @db.VarChar(45)
+  Hereglegch_utas_no         String? @db.VarChar(25)
+  Hereglegch_hayag           String? @db.VarChar(255)
+  Ashiglaj_duusah_hugatsaa   DateTime?
+  Ashiglah_erhtei_eseh       Boolean @default(true)
+  Hereglegch_login_name      String? @db.VarChar(25)
+  Hereglegch_login_password  String? @db.VarChar(65)
+  Hereglegch_angilal_ID      String? @db.VarChar(5)
+  Baiguullaga_ID             String? @db.VarChar(5)
+
+  Hereglegch_angilal Hereglegch_angilal? @relation(fields: [Hereglegch_angilal_ID], references: [Hereglegch_angilal_ID])
+  Baiguullaga        Baiguullaga?        @relation(fields: [Baiguullaga_ID], references: [Baiguullaga_ID])
+  Tusliin_angilal_lavlah Tusliin_angilal_lavlah[]
+  Tusliin_bagiin_gishuun Tusliin_bagiin_gishuun[]
+  Zahialga           Zahialga[]
+}
+
+model Tusliin_angilal_lavlah {
+  Tusliin_angilal_lavlah_ID String  @id @map("Tusliin_angilal_lavlah_ID") @db.VarChar(6)
+  Tusliin_angilal_ner       String? @db.VarChar(45)
+  Hereglegch_ID             String? @db.VarChar(5)
+
+  Hereglegch Hereglegch? @relation(fields: [Hereglegch_ID], references: [Hereglegch_ID])
+  Tusul      Tusul[]
+}
+
+model Tusliin_tuluv_lavlah {
+  Tusliin_tuluv_lavlah_id String  @id @map("Tusliin_tuluv_lavlah_id") @db.VarChar(6)
+  Tusliin_tuluv_lavlah_ner String? @db.VarChar(45)
+
+  Tusliin_tuluv Tusliin_tuluv[]
+}
+
+model Tusliin_tuluv {
+  Tusliin_tuluv_ID        String  @id @map("Tusliin_tuluv_ID") @db.VarChar(5)
+  Tailbar                 String? @db.VarChar(255)
+  Ognoo                   DateTime @default(now())
+  Tusliin_tuluv_lavlah_id String? @db.VarChar(6)
+
+  Tusliin_tuluv_lavlah Tusliin_tuluv_lavlah? @relation(fields: [Tusliin_tuluv_lavlah_id], references: [Tusliin_tuluv_lavlah_id])
+  Tusul                Tusul[]
+}
+
+model Tusul {
+  Tusul_ID                String  @id @map("Tusul_ID") @db.VarChar(5)
+  Tusul_ner               String? @db.VarChar(45)
+  Ehleh_hugatsaa          DateTime?
+  Duusah_hugatsaa         DateTime?
+  Nemelt_file             String? @db.VarChar(255)
+  Tailbar                 String? @db.VarChar(255)
+  Tusliin_angilal_lavlah_ID String? @db.VarChar(6)
+  Tusliin_tuluv_ID        String? @db.VarChar(5)
+
+  Tusliin_angilal_lavlah Tusliin_angilal_lavlah? @relation(fields: [Tusliin_angilal_lavlah_ID], references: [Tusliin_angilal_lavlah_ID])
+  Tusliin_tuluv          Tusliin_tuluv?          @relation(fields: [Tusliin_tuluv_ID], references: [Tusliin_tuluv_ID])
+  Daalgavar_angilal_lavlah Daalgavar_angilal_lavlah[]
+  Tusliin_daalgavar       Tusliin_daalgavar[]
+  Tusliin_bagiin_gishuun Tusliin_bagiin_gishuun[]
+}
+
+model Daalgavar_angilal_lavlah {
+  Daalgavar_angilal_lavlah_ID String  @id @map("Daalgavar_angilal_lavlah_ID") @db.VarChar(6)
+  Daalgavar_angilal_ner       String? @db.VarChar(45)
+  Tusul_ID                    String? @db.VarChar(5)
+
+  Tusul Tusul? @relation(fields: [Tusul_ID], references: [Tusul_ID])
+  Tusliin_daalgavar Tusliin_daalgavar[]
+}
+
+model Tusliin_daalgavar {
+  Tusliin_daalgavar_ID          String  @id @map("Tusliin_daalgavar_ID") @db.VarChar(5)
+  Tusliin_daalgavar_ner         String? @db.VarChar(45)
+  Tusliin_daalgavar_daraalal    Int?
+  Ehleh_hugatsaa                DateTime?
+  Duusah_hugatsaa               DateTime?
+  Tailbar                       String? @db.VarChar(255)
+  Havsralt_file                 String? @db.VarChar(255)
+  Tusul_ID                      String? @db.VarChar(5)
+  Daalgavar_angilal_lavlah_ID   String? @db.VarChar(6)
+
+  Tusul Tusul? @relation(fields: [Tusul_ID], references: [Tusul_ID])
+  Daalgavar_angilal_lavlah Daalgavar_angilal_lavlah? @relation(fields: [Daalgavar_angilal_lavlah_ID], references: [Daalgavar_angilal_lavlah_ID])
+  Daalgavar_tuluv Daalgavar_tuluv[]
+  Tusliin_gishuunii_daalgavar Tusliin_gishuunii_daalgavar[]
+  Setgegdel Setgegdel[]
+}
+
+model Daalgavar_tuluv_lavlah {
+  Daalgavar_tuluv_lavlah_id String  @id @map("Daalgavar_tuluv_lavlah_id") @db.VarChar(6)
+  Daalgavar_tuluv_lavlah_ner String? @db.VarChar(45)
+
+  Daalgavar_tuluv Daalgavar_tuluv[]
+}
+
+model Daalgavar_tuluv {
+  Daalgavar_tuluv_ID          String  @id @map("Daalgavar_tuluv_ID") @db.VarChar(5)
+  Tailbar                     String? @db.VarChar(255)
+  Ognoo                       DateTime @default(now())
+  Daalgavar_tuluv_lavlah_id   String? @db.VarChar(6)
+  Tusliin_daalgavar_ID        String? @db.VarChar(5)
+
+  Daalgavar_tuluv_lavlah Daalgavar_tuluv_lavlah? @relation(fields: [Daalgavar_tuluv_lavlah_id], references: [Daalgavar_tuluv_lavlah_id])
+  Tusliin_daalgavar Tusliin_daalgavar? @relation(fields: [Tusliin_daalgavar_ID], references: [Tusliin_daalgavar_ID])
+}
+
+model Tusliin_bagiin_gishuun {
+  Tusliin_bagiin_gishuun_ID String  @id @map("Tusliin_bagiin_gishuun_ID") @db.VarChar(6)
+  Tusliin_bagiin_gishuun_ner String? @db.VarChar(45)
+  Tusliin_udirdagch_eseh    Boolean @default(false)
+  Hereglegch_ID             String? @db.VarChar(5)
+  Tusul_ID                  String? @db.VarChar(5)
+
+  Hereglegch Hereglegch? @relation(fields: [Hereglegch_ID], references: [Hereglegch_ID])
+  Tusul      Tusul?      @relation(fields: [Tusul_ID], references: [Tusul_ID])
+  Tusliin_gishuunii_daalgavar Tusliin_gishuunii_daalgavar[]
+  Setgegdel  Setgegdel[]
+}
+
+model Tusliin_gishuunii_daalgavar {
+  Tusliin_gishuunii_daalgavar_ID String  @id @map("Tusliin_gishuunii_daalgavar_ID") @db.VarChar(6)
+  Tusliin_daalgavar_ID           String? @db.VarChar(5)
+  Tusliin_bagiin_gishuun_ID      String? @db.VarChar(6)
+
+  Tusliin_daalgavar Tusliin_daalgavar? @relation(fields: [Tusliin_daalgavar_ID], references: [Tusliin_daalgavar_ID])
+  Tusliin_bagiin_gishuun Tusliin_bagiin_gishuun? @relation(fields: [Tusliin_bagiin_gishuun_ID], references: [Tusliin_bagiin_gishuun_ID])
+  Gishuunii_daalgavar_tsag Gishuunii_daalgavar_tsag[]
+  Daalgavriin_unelgee Daalgavriin_unelgee[]
+}
+
+model Gishuunii_daalgavar_tsag {
+  Gishuunii_daalgavar_tsag_ID String @id @map("Gishuunii_daalgavar_tsag_ID") @db.VarChar(6)
+  Tsag                       Float?
+  Minute                     Float?
+  Tusliin_gishuunii_daalgavar_ID String? @db.VarChar(6)
+
+  Tusliin_gishuunii_daalgavar Tusliin_gishuunii_daalgavar? @relation(fields: [Tusliin_gishuunii_daalgavar_ID], references: [Tusliin_gishuunii_daalgavar_ID])
+}
+
+model Daalgavriin_unelgee {
+  Daalgavriin_unelgee_ID String  @id @map("Daalgavriin_unelgee_ID") @db.VarChar(6)
+  Daalgavriin_unelgee    Float?
+  Tusliin_gishuunii_daalgavar_ID String? @db.VarChar(6)
+
+  Tusliin_gishuunii_daalgavar Tusliin_gishuunii_daalgavar? @relation(fields: [Tusliin_gishuunii_daalgavar_ID], references: [Tusliin_gishuunii_daalgavar_ID])
+}
+
+model Setgegdel {
+  Setgegdel_ID            String  @id @map("Setgegdel_ID") @db.VarChar(6)
+  Setgegdel               String? @db.VarChar(255)
+  Tusliin_bagiin_gishuun_ID String? @db.VarChar(6)
+  Tusliin_daalgavar_ID    String? @db.VarChar(5)
+  parent_id               String? @db.VarChar(6)
+
+  Tusliin_bagiin_gishuun Tusliin_bagiin_gishuun? @relation(fields: [Tusliin_bagiin_gishuun_ID], references: [Tusliin_bagiin_gishuun_ID])
+  Tusliin_daalgavar      Tusliin_daalgavar?      @relation(fields: [Tusliin_daalgavar_ID], references: [Tusliin_daalgavar_ID])
+  parent Setgegdel? @relation("ParentComment", fields: [parent_id], references: [Setgegdel_ID], onDelete: Cascade)
+  children Setgegdel[] @relation("ParentComment")
+}
+
+model Tulbur_bagts_lavlah {
+  Tulbur_bagts_id      String  @id @map("Tulbur_bagts_id") @db.VarChar(6)
+  Tulbur_bagts_ner     String  @db.VarChar(25)
+  Tulbur_bagts_hugatsaa Int
+  Tulbur_bagts_une     Float
+
+  Zahialga Zahialga[]
+}
+
+model Zahialga_tuluv_lavhlah {
+  Zahialga_tuluv_lavlah_ID String  @id @map("Zahialga_tuluv_lavlah_ID") @db.VarChar(6)
+  Zahialga_tuluv_ner       String  @db.VarChar(25)
+
+  Zahialga Zahialga[]
+}
+
+model Zahialga {
+  Zahialga_id                String   @id @map("Zahialga_id") @db.VarChar(6)
+  Zahialga_ognoo             DateTime @default(now())
+  Hereglegchiin_too          Int
+  Zahialga_tuluv_lavlah_ID   String   @db.VarChar(6)
+  Hereglegch_ID              String   @db.VarChar(5)
+  Tulbur_bagts_id            String   @db.VarChar(6)
+  Baiguullaga_ID             String   @db.VarChar(5)
+  Zahialgiin_dun             Float
+
+  Zahialga_tuluv_lavhlah Zahialga_tuluv_lavhlah @relation(fields: [Zahialga_tuluv_lavlah_ID], references: [Zahialga_tuluv_lavlah_ID])
+  Hereglegch            Hereglegch              @relation(fields: [Hereglegch_ID], references: [Hereglegch_ID])
+  Tulbur_bagts_lavlah   Tulbur_bagts_lavlah     @relation(fields: [Tulbur_bagts_id], references: [Tulbur_bagts_id])
+  Baiguullaga           Baiguullaga             @relation(fields: [Baiguullaga_ID], references: [Baiguullaga_ID])
+  Tulbur                Tulbur[]
+}
+
+model Tulbur_tuluv_lavlah {
+  Tulbur_tuluv_lavlah_ID String  @id @map("Tulbur_tuluv_lavlah_ID") @db.VarChar(6)
+  Tulbur_tuluv_ner       String  @db.VarChar(25)
+
+  Tulbur Tulbur[]
+}
+
+model Tulbur_turul_lavlah {
+  Tulbur_turul_lavlah_ID String  @id @map("Tulbur_turul_lavlah_ID") @db.VarChar(6)
+  Tulbur_turul_ner       String  @db.VarChar(25)
+
+  Tulbur Tulbur[]
+}
+
+model Tulbur {
+  Tulbur_ID                String   @id @map("Tulbur_ID") @db.VarChar(5)
+  Tulbur_ognoo             DateTime @default(now())
+  Tulbur_dun               Float
+  Noat_dun                 Float
+  Niit_dun                 Float
+  Tulbur_tuluv_lavlah_ID   String   @db.VarChar(6)
+  Tulbur_turul_lavlah_ID   String   @db.VarChar(6)
+  Zahialga_id              String   @db.VarChar(6)
+
+  Tulbur_tuluv_lavlah Tulbur_tuluv_lavlah @relation(fields: [Tulbur_tuluv_lavlah_ID], references: [Tulbur_tuluv_lavlah_ID])
+  Tulbur_turul_lavlah Tulbur_turul_lavlah @relation(fields: [Tulbur_turul_lavlah_ID], references: [Tulbur_turul_lavlah_ID])
+  Zahialga            Zahialga            @relation(fields: [Zahialga_id], references: [Zahialga_id])
+}
